@@ -121,4 +121,5 @@ public class Game {
         hintCounter++;
         return hint;
     }
+
 }
