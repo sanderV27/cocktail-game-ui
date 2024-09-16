@@ -1,0 +1,4 @@
+è00:55:30.727 [Test worker] DEBUG org.springframework.web.client.RestTemplate - HTTP GET https://www.thecocktaildb.com/api/json/v1/1/random.php
+}00:55:30.854 [Test worker] DEBUG org.springframework.web.client.RestTemplate - Accept=[application/json, application/*+json]
+_00:55:31.396 [Test worker] DEBUG org.springframework.web.client.RestTemplate - Response 200 OK
+~00:55:31.403 [Test worker] DEBUG org.springframework.web.client.RestTemplate - Reading to [com.ridango.game.CocktailResponse]
