@@ -47,45 +47,38 @@ public class CocktailGameApplication implements CommandLineRunner {
 				usedCocktails.add(cocktail.getStrDrink()); // Add to the used set
 
 				Game game = new Game(cocktail); // Create the game with initial hints revealed
+				int attemptsLeft = 5; // Control attempts from the main loop
 				System.out.println("New game started! Guess the cocktail: " + game.getRevealedName());
 				System.out.println("Additional info: " + game.getNextHint());
 
-				while (game.getAttemptsLeft() > 0	) {
-					if(game.getAttemptsLeft()==1){
-						System.out.println("This is your last chance, guess wisely:");
-						game.getNextHint();
-
-					} else{
-						System.out.println("Enter your guess (or type 'skip' to reveal more hints): ");}
+				while (attemptsLeft > 0) {
+					System.out.println("Enter your guess (or type 'skip' to reveal more hints): ");
 					String guess = scanner.nextLine();
-					if (game.makeGuess(guess)) {
-						System.out.println("Correct! The cocktail is " + game.getCurrentCocktail().getStrDrink());
-						totalScore += game.getAttemptsLeft(); // Increase score by attempts left
-						System.out.println("You current score is:"+ totalScore);
-						break; // Move directly to the next cocktail
-					}
-
 
 					if (guess.equalsIgnoreCase("skip")) {
 						game.revealRandomLetters(); // Reveal more letters
 						System.out.println("Cocktail: " + game.getRevealedName());
-						System.out.println("Additional info: " + game.getNextHint()); // Show next hint and decrement attempts
-						System.out.println("Attempts left: " + game.getAttemptsLeft());
-					} else if(game.getAttemptsLeft()>1){
-						game.revealRandomLetters(); // Reveal more letters
-						System.out.println("Wrong guess. Try again! : " + game.getRevealedName());
-						System.out.println("Additional info: " + game.getNextHint()); // Show next hint and decrement attempts
-						System.out.println("Attempts left: " + game.getAttemptsLeft());
+						System.out.println("Additional info: " + game.getNextHint()); // Show next hint
+						attemptsLeft--; // Decrease attempts when skipping
+						System.out.println("Attempts left: " + attemptsLeft);
+					} else if (game.makeGuess(guess)) {
+						System.out.println("Correct! The cocktail is " + game.getCurrentCocktail().getStrDrink());
+						System.out.println("You got " + attemptsLeft+ " points for this round");
+						totalScore += attemptsLeft; // Increase score by attempts left
+						break; // Exit the loop as the guess is correct
+					} else {
+						System.out.println("Wrong guess. Try again!");
+						attemptsLeft--; // Decrease attempts for incorrect guess
+						System.out.println("Attempts left: " + attemptsLeft);
+						System.out.println("Cocktail: " + game.getRevealedName());
 					}
-					if (game.getAttemptsLeft() == 0) {
+
+					// Check if the game should end
+					if (attemptsLeft == 0) {
 						System.out.println("Game over! The correct answer was: " + game.getCurrentCocktail().getStrDrink());
 						newCocktail = false; // End the game session
 					}
-
-
 				}
-
-
 
 				// If the player didn't guess correctly, display the score and high score
 				if (!newCocktail) {

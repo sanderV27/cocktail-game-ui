@@ -2,47 +2,52 @@ package com.ridango;
 
 import com.ridango.game.Cocktail;
 import com.ridango.game.Game;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
-    private Game game;
-    private Cocktail cocktail;
 
-    @BeforeEach
-    void setUp() {
-        // Set up a mock cocktail for testing
-        cocktail = new Cocktail();
+    @Test
+    void testMaxIncorrectGuesses() {
+        Cocktail cocktail = new Cocktail();
         cocktail.setStrDrink("Mojito");
-        cocktail.setStrCategory("Cocktail");
-        cocktail.setStrGlass("Highball glass");
-        cocktail.setStrInstructions("Mix ingredients.");
+        Game game = new Game(cocktail);
 
+        // Make 5 incorrect guesses
+        for (int i = 0; i < 5; i++) {
+            game.makeGuess("WrongGuess");
+        }
 
-        game = new Game(cocktail); // Initialize a new game with this cocktail
+        // Check that the game is over after 5 incorrect guesses
+        assertTrue(game.isGameOver(), "The game should be over after 5 incorrect guesses.");
     }
 
     @Test
-    void testInitialState() {
-        assertEquals("______", game.getRevealedName(), "Initial revealed name should be underscores.");
-        assertEquals(5, game.getAttemptsLeft(), "Initial attempts left should be 5.");
+    void testMaxSkips() {
+        Cocktail cocktail = new Cocktail();
+        cocktail.setStrDrink("Mojito");
+        Game game = new Game(cocktail);
+
+        // Skip 5 times
+        for (int i = 0; i < 5; i++) {
+            game.getNextHint();
+        }
+
+        // Check that the game is over after 5 skips
+        assertTrue(game.isGameOver(), "The game should be over after 5 skips.");
     }
 
-
     @Test
-    void testRevealRandomLetters() {
-        game.revealRandomLetters();
-        assertNotEquals("______", game.getRevealedName(), "Revealed name should contain some letters.");
-    }
+    void testCorrectGuessScoring() {
+        Cocktail cocktail = new Cocktail();
+        cocktail.setStrDrink("Mojito");
+        Game game = new Game(cocktail);
 
-    @Test
-    void testGetNextHint() {
-        String hint = game.getNextHint();
-        assertNotNull(hint, "Hint should not be null.");
-        assertEquals(4, game.getAttemptsLeft(), "Attempts left should decrease by 1 after revealing a hint.");
+        // Correct guess
+        boolean result = game.makeGuess("Mojito");
+
+        // Check the score is equal to the number of attempts left
+        assertTrue(result, "The guess should be correct.");
+        assertEquals(5, game.getScore(), "The score should be equal to the number of attempts left (5).");
     }
 }

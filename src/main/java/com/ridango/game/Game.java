@@ -26,7 +26,7 @@ public class Game {
             }
         }
 
-        this.attemptsLeft = 6;
+        this.attemptsLeft = 5; // Set maximum attempts to 5
         this.score = 0;
         this.revealedIndexes = new HashSet<>();
         this.hintCounter = 0; // Initialize hint counter
@@ -52,11 +52,12 @@ public class Game {
     }
 
     public boolean makeGuess(String guess) {
-        // Compare player's guess with the cocktail's name, ignoring case
         if (guess.equalsIgnoreCase(currentCocktail.getStrDrink())) {
-            score += attemptsLeft;
+            score += attemptsLeft; // Add remaining attempts to score on a correct guess
             return true;
         } else {
+            attemptsLeft--; // Decrement attempts on an incorrect guess
+            revealRandomLetters(); // Reveal letters after a wrong guess
             return false;
         }
     }
@@ -122,4 +123,8 @@ public class Game {
         return hint;
     }
 
+    public boolean isGameOver() {
+        // The game is over if there are no attempts left
+        return attemptsLeft <= 0;
+    }
 }
